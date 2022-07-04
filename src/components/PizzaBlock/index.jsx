@@ -59,4 +59,4 @@ function PizzaBlock({name, imageUrl, price, sizes, types}) {
   )
 }
 
-export default PizzaBlock;
+export default PizzaBlock
