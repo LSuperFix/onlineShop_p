@@ -1,0 +1,31 @@
+@import '../../scss/variables';
+.root {
+  ul {
+    display: flex;
+  }
+
+  li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $orange;
+    border-radius: 50%;
+    margin-left: 20px;
+    width: 45px;
+    height: 45px;
+    color: $orange;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $orange;
+      color: white;
+    }
+
+  }
+
+    .active {
+    background-color: $orange;
+    color: white;
+  }
+}
+
