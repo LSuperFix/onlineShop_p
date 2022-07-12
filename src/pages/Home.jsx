@@ -7,13 +7,19 @@ import { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import { useContext } from 'react';
 import { searchContdext } from '../App';
-
+import {useSelector, useDispatch} from 'react-redux'
+import { setCategoryId } from '../redux/slices/filterSlice'
 
 function Home() {
   const [items, setItems] = useState([])
   const [isLoarding, setIsLoardig] = useState(true)
 
-  const [categoryId, setCategoryId] = useState(0);
+  const categoryId = useSelector(state => state.filter.categoryId)
+  //const [categoryId, setCategoryId] = useState(0);
+  const dispatch = useDispatch()
+  function changeCategory(id) {
+    dispatch(setCategoryId(id))
+  }
   const [sortType, setSortType] = useState ({name: 'популярности', sortProperty: 'rating'})
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -37,7 +43,7 @@ function Home() {
   return(
     <div className="container">
       <div className="content__top">
-        <Categories categoryId = {categoryId} onChangeCategory = {(id) =>setCategoryId(id)}/>
+        <Categories categoryId = {categoryId} onChangeCategory = {(id) =>changeCategory(id)}/>
         <Sort sortType ={sortType} onChangeSort = {(obj) => setSortType(obj)}/>
       </div>
       <h2 className="content__title">Все пиццы</h2>
