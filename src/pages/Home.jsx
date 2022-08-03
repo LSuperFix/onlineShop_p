@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import { searchContdext } from '../App';
 import {useSelector, useDispatch} from 'react-redux'
 import { setCategoryId, setSortType } from '../redux/slices/filterSlice'
+import axios from 'axios';
 
 function Home() {
   const [items, setItems] = useState([])
@@ -36,9 +37,8 @@ function Home() {
   console.log(currentPage)
   useEffect(()=>{
     setIsLoardig(true)
-    fetch(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
-    .then((res)=>res.json())
-    .then((data)=>setItems(data))
+    axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
+    .then((res)=>setItems(res.data))
     setTimeout(()=>setIsLoardig(false), 1000)
   }, [categoryId, sortType, searchValue, currentPage])
   return(
