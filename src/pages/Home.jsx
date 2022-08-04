@@ -8,7 +8,7 @@ import Pagination from '../components/Pagination';
 import { useContext } from 'react';
 import { searchContdext } from '../App';
 import {useSelector, useDispatch} from 'react-redux'
-import { setCategoryId, setSortType } from '../redux/slices/filterSlice'
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice'
 import axios from 'axios';
 
 function Home() {
@@ -18,12 +18,17 @@ function Home() {
   //const [categoryId, setCategoryId] = useState(0);
   const categoryId = useSelector(state => state.filter.categoryId)
   const sortType = useSelector(state => state.filter.sort)
+  const currentPage = useSelector(state => state.filter.currentPage)
   const dispatch = useDispatch()
   function changeCategory(id) {
     dispatch(setCategoryId(id))
   }
+
+  function onSetCurrentPage(n) {
+    dispatch(setCurrentPage(n))
+  }
   
-  const [currentPage, setCurrentPage] = useState(1)
+  //const [currentPage, setCurrentPage] = useState(1)
 
   const {searchValue} = useContext(searchContdext)
 
@@ -34,7 +39,6 @@ function Home() {
 
   const skeleton = [...new Array(6)].map((a,i)=><Skeleton key ={i} />)
   const pizza = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
-  console.log(currentPage)
   useEffect(()=>{
     setIsLoardig(true)
     axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
@@ -51,7 +55,7 @@ function Home() {
       <div className="content__items">
         { isLoarding ? skeleton : pizza }
       </div>
-      <Pagination currentPage={currentPage} onSetCurrentPage={n => setCurrentPage(n)} />
+      <Pagination currentPage={currentPage} onSetCurrentPage={n => onSetCurrentPage(n)} />
     </div>
   )
 }
