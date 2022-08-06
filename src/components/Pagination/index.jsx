@@ -1,11 +1,9 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
 import styles from './pagination.module.scss'
 
 function Pagination( {currentPage, onSetCurrentPage} ) {
   const [massivPagesLineState, setMassivPagesLineState] = useState([])
-  const dispatch = useDispatch()
   let pages = 3
   //const massivPagesLineState = ['<', 1, 2, 3, '>']
 
