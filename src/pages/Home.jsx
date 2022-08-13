@@ -52,7 +52,7 @@ function Home() {
   const skeleton = [...new Array(6)].map((a,i)=><Skeleton key ={i} />)
   const pizza = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
 
-  function fetchPizzas() {
+  async function fetchPizzas() {
     setIsLoardig(true)
     
     const category = categoryId > 0 ? `category=${categoryId}` : ''
@@ -60,9 +60,25 @@ function Home() {
     const order = sortType.sortProperty.includes('-') ? 'desc' : 'asc'
     const search = searchValue ? `search=${searchValue}` : ''
 
-    axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
-    .then((res)=>setItems(res.data))
-    setTimeout(()=>setIsLoardig(false), 1000)
+    /*axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
+    .then((res) => {
+      setItems(res.data)
+      setTimeout(()=>setIsLoardig(false), 1000)
+    }).catch((err) =>{
+      setTimeout(()=>setIsLoardig(false), 1000)
+      console.log(err)
+    })*/
+
+    try {
+       const res = await axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
+       setItems(res.data)
+       setTimeout(()=>setIsLoardig(false), 1000)
+    } catch(err) {
+      setTimeout(()=>setIsLoardig(false), 1000)
+      alert("ERROR", err)
+      console.log("ERROR", err)
+    }
+
   }
 
   //если был первый рендер то проверяем URL параметры и сохраняем их Redux
