@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import { searchContdext } from '../App';
 import {useSelector, useDispatch} from 'react-redux'
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice'
+import { fetchPizza, setItems } from '../redux/slices/pizzaSlice';
 import axios from 'axios';
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom';
@@ -17,12 +18,14 @@ import { useRef } from 'react';
 
 
 function Home() {
-  const [items, setItems] = useState([])
-  const [isLoarding, setIsLoardig] = useState(true)
+  //const [items, setItems] = useState([])
+  //const [isLoarding, setIsLoardig] = useState(true)
+  //const [it, setIt] = useState([])
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isSearch = useRef(false)
   const isMounted = useRef(false)
+  const {items, status} = useSelector(state => state.pizza)
 
   const list = [
     {name: 'популярности возр.', sortProperty: 'rating'}, 
@@ -52,8 +55,8 @@ function Home() {
   const skeleton = [...new Array(6)].map((a,i)=><Skeleton key ={i} />)
   const pizza = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
 
-  async function fetchPizzas() {
-    setIsLoardig(true)
+  async function getPizzas() {
+    //setIsLoardig(true)
     
     const category = categoryId > 0 ? `category=${categoryId}` : ''
     const orderBy = sortType.sortProperty.replace('-', '')
@@ -68,17 +71,26 @@ function Home() {
       setTimeout(()=>setIsLoardig(false), 1000)
       console.log(err)
     })*/
-
-    try {
-       const res = await axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
+    /*try {
+      const res = await axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
        setItems(res.data)
        setTimeout(()=>setIsLoardig(false), 1000)
     } catch(err) {
       setTimeout(()=>setIsLoardig(false), 1000)
       alert("ERROR", err)
-      console.log("ERROR", err)
-    }
-
+      console.log("Ошибка при получении пиц")
+    }*/
+    
+    const {data} = await axios.get(`https://629b5375656cea05fc374b90.mockapi.io/items?${category}&orderBy=${orderBy}&order=${order}&${search}&page=${currentPage}&limit=4`)
+    /*dispatch(fetchPizza(
+      category,
+      orderBy,
+      order,
+      search,
+      currentPage
+    ))*/  
+    dispatch(fetchPizza(data))
+    window.scrollTo(0,0)
   }
 
   //если был первый рендер то проверяем URL параметры и сохраняем их Redux
@@ -113,11 +125,8 @@ function Home() {
 
   //если был первый рендер то Обращаемся к серверу и запрашиваем пиццы
   useEffect(()=>{
-    window.scrollTo(0, 0)
-    if(!isSearch.current) {
-      fetchPizzas()
-    }
-    isSearch.current = false
+      getPizzas()
+      window.scrollTo(0, 0)
   }, [categoryId, sortType, searchValue, currentPage])
 
   return(
@@ -128,7 +137,8 @@ function Home() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
-        { isLoarding ? skeleton : pizza }
+        { status === 'error' ? (<h2>ОШИБКА ЗАГРУЗКИ ПИЦ</h2>) :
+         (status === 'loading' ? skeleton : pizza) }
       </div>
       <Pagination currentPage={currentPage} onSetCurrentPage={n => onSetCurrentPage(n)} />
     </div>
