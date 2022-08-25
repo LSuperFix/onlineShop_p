@@ -9,10 +9,10 @@ import { useContext } from 'react';
 import { searchContdext } from '../App';
 import {useSelector, useDispatch} from 'react-redux'
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice'
-import { fetchPizza, setItems } from '../redux/slices/pizzaSlice';
+import { fetchPizza, setItems, selectorPizza } from '../redux/slices/pizzaSlice';
 import axios from 'axios';
 import qs from 'qs'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import list from '../components/Sort'
 import { useRef } from 'react';
 
@@ -25,7 +25,7 @@ function Home() {
   const navigate = useNavigate()
   const isSearch = useRef(false)
   const isMounted = useRef(false)
-  const {items, status} = useSelector(state => state.pizza)
+  const {items, status} = useSelector(selectorPizza)
 
   const list = [
     {name: 'популярности возр.', sortProperty: 'rating'}, 
@@ -53,7 +53,7 @@ function Home() {
   const {searchValue} = useContext(searchContdext)
 
   const skeleton = [...new Array(6)].map((a,i)=><Skeleton key ={i} />)
-  const pizza = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+  const pizza = items.map((obj) => <Link to={`/pizza/${obj.id}`}><PizzaBlock key={obj.id} {...obj} /> </Link>)
 
   async function getPizzas() {
     //setIsLoardig(true)

@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { searchContdext } from "../App"
 import logoSvg from "../assets/img/pizza-logo.svg"
 import Search from "./Search"
@@ -9,7 +9,7 @@ function Header () {
   const {searchValue, setSearchValue} = useContext(searchContdext)
   const {items, totalPrice} = useSelector(state => state.cart)
   const itemsInCart = items.reduce((sum, item) => sum + item.count, 0)
-  console.log(itemsInCart)
+  const location = useLocation()
   return ( 
     <div className="header">
       <div className="container">
@@ -24,7 +24,7 @@ function Header () {
         </Link>  
         <Search searchValue={searchValue} setSearchValue={setSearchValue} />
           <div className="header__cart">
-            <Link to='/cart' className="button button--cart">
+            { location.pathname !== '/cart' && (<Link to='/cart' className="button button--cart">
               <span>{totalPrice}</span>
               <div className="button__delimiter"></div>
               <svg
@@ -57,7 +57,7 @@ function Header () {
                 />
               </svg>
               <span>{itemsInCart}</span>
-            </Link>
+            </Link>)}
           </div>
       </div>
     </div>)

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import { addItem } from '../../redux/slices/cartSlice'
-
+import { addItem, selectorCartItem } from '../../redux/slices/cartSlice'
 
 function PizzaBlock({name, imageUrl, price, sizes, types, id}) {
   const dispatch = useDispatch()
@@ -22,7 +21,7 @@ function PizzaBlock({name, imageUrl, price, sizes, types, id}) {
     dispatch(addItem(item))
   }
   //считаем количество товаров данного типа
-  const cartItem = useSelector(state => state.cart.items.find(obj => obj.id === id))
+  const cartItem = useSelector(selectorCartItem)
   const addedCount = cartItem ? cartItem.count : 0
 
   return(
